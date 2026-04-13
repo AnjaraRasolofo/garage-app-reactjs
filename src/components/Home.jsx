@@ -5,77 +5,99 @@ import API from "../services/api";
 
 const Home = () => {
   const token = localStorage.getItem("token");
+
   const [employees, setEmployees] = useState([]);
   const [searchEmployee, setSearchEmployee] = useState('');
   const [filteredEmployees, setFilteredEmployees] = useState([]);
+
   const [customers, setCustomers] = useState([]);
-  const [searchCustomers, setSearchCustomers] = useState('');
+  const [searchCustomer, setSearchCustomer] = useState('');
   const [filteredCustomers, setFilteredCustomers] = useState([]);
+
   const [repFilter, setRepFilter] = useState('day');
   const [stockStats, setStockStats] = useState({
     out_of_stock: 0,
     low_stock: 0,
     total_parts: 0
   });
-  const [searchParts, setSearchParts] = useState("");
+  const [searchPart, setSearchPart] = useState("");
   const [partsResults, setPartsResults] = useState([]);
-  /*
-  const fetchCustomers = async () => {
-        try {
-          const res = await API.get('/customers');
-          setCustomers(res.data.data);
-        } catch (err) {
-          if (err.response?.status === 404) console.error("Erreur lors du chargement des clients"); 
-          else console.error("Erreur API :", err);
-          setCustomers([]); // fallback propre
-        }
-  };*/
 
-  const fetchEmployees = async () => {
-    try {
-      const res = await API.get('/employees');
-      setEmployees(res?.data.data ?? []);
-    } 
-    catch (err) {
-      if (err.response?.status === 404) {
-        console.error("Erreur lors du chargement des clients");
-      } else console.error("Erreur API :", err);
-      setEmployees([]); // fallback propre
-    }
-  };
+  const [searchInvoice, setSearchInvoice] = useState("");
+  const [invoiceResults, setInvoiceResults] = useState([]);
 
-  const fetchSearchParts = async () => {
-    try {
-      const res = await API.get('/parts/search', {
-        params: {
-          search: searchParts
-        }
-      });
-      setSearchParts(res.data);
-    } catch (error) {
-      console.error(error);
+
+  const handleEmployeeSearch = async (e) => {
+    const value = e.target.value;
+    setSearchEmployee(value);
+
+    if (value.trim() === "") {
+      setFilteredEmployees([]); // vide si rien tapé
+      return;
     }
-  };
-  /*
-  const fetchCustomerSummaries = async () => {
+
     try {
-      const res = await API.get('/customers/summary');
-      setCustomers(res.data);
-      //setFilteredClients(res.data);
+      const res = await API.get(`/employees/search?query=${value}`);
+      setFilteredEmployees(res.data);
     } catch (err) {
-      console.error('Erreur chargement résumé clients :', err);
+      console.error(err);
     }
   };
 
-  const fetchVehicles = async () => {
-        try {
-          const res = await API.get('/vehicles');
-          setVehicles(res.data);
-        } catch (err) {
-          console.error('Erreur lors du chargement des véhicules :', err);
-        }
+  const handleCustomerSearch = async (e) => {
+    const value = e.target.value;
+    setSearchCustomer(value);
+
+    if (value.trim() === "") {
+      setFilteredCustomers([]);
+      return;
+    }
+
+    try {
+      const res = await API.get(`/customers/search?query=${value}`);
+      setFilteredCustomers(res.data);
+    } catch (err) {
+      console.error(err);
+      setFilteredCustomers([]);
+    }
   };
- */
+
+  const handlePartSearch = async (e) => {
+    const value = e.target.value;
+    setSearchPart(value);
+
+    if (value.trim() === "") {
+      setPartsResults([]);
+      return;
+    }
+
+    try {
+      const res = await API.get(`/parts/search?query=${value}`);
+      setPartsResults(res.data);
+    } catch (err) {
+      console.error(err);
+      setPartsResults([]);
+    }
+  };
+
+  const handleInvoiceSearch = async (e) => {
+    const value = e.target.value;
+    setSearchInvoice(value);
+
+    if (value.trim() === "") {
+      setInvoiceResults([]);
+      return;
+    }
+
+    try {
+      const res = await API.get(`/invoices/search?query=${value}`);
+      setInvoiceResults(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error(err);
+      setInvoiceResults([]);
+    }
+  };
+  
   const fetchStockStats = async () => {
     try {
       const res = await API.get('/dashboard/stock');
@@ -84,104 +106,20 @@ const Home = () => {
       console.error("Error fetching parts stats:", error);
     }
   };
-/*
-  const fetchInvoiceStats = async () => {
-    try {
-      const res = await API.get('/invoices/stats');
-      setInvoiceStats(res.data);
-    } catch (err) {
-      console.error("Erreur factures :", err);
-    }
-  };
 
-  const fetchRepairStats = async (filter) => {
-    try {
-      const res = await API.get(`/repairs/stats?filter=${filter}`);
-      setRepairStats(res.data.total);
-    } catch (err) {
-      console.error("Erreur stats réparation :", err);
-    }
-  };
-*/
   useEffect(() => {
     
-    fetchEmployees();
+    //fetchEmployees();
     fetchStockStats();   
 
-  }, [searchParts]);
+  }, []);
 
   // Gestion employés
   const totalCount = employees.length;
   const availableCount = (employees || []).filter(e => e.status === 'available').length;
   const onLeaveCount = (employees || []).filter(e => e.status === 'on_leave').length;
 
-  // Recherche clients
-  /*
-  const handleCustomersSearch = (e) => {
-  const val = e.target.value.toLowerCase();
-  setSearchCustomers(val);
-  setFilteredCustomers(
-      (customers || []).filter(
-        (c) =>
-          (c.firstname || '').toLowerCase().includes(val) ||
-          (c.email || '').toLowerCase().includes(val) ||
-          (c.plate || '').toLowerCase().includes(val) ||
-          (c.phone || '').toLowerCase().includes(val)
-      )
-    );
-  };
-
-  const handleInvoicesSearch = (e) => {
-
-  }
-*/
-  const handleEmployeeSearch = (e) => {
-    const val = e.target.value.toLowerCase();
-    setSearchEmployee(val);
-    setFilteredEmployees(
-      (employees || []).filter(
-        (c) =>
-          (c.firstname || '').toLowerCase().includes(val) ||
-          (c.lastname || '').toLowerCase().includes(val) ||
-          (c.function || '').toLowerCase().includes(val) 
-      )
-    );
-  }
-
-  // Filtrage historique
-  /*
-  const filterRepairs = (customer) => {
-    const today = new Date();
-    return customer.repairs.filter(r => {
-      const date = new Date(r.date);
-      if (repFilter === 'day') return date.toDateString() === today.toDateString();
-      if (repFilter === 'week') {
-        const firstDay = new Date(today.setDate(today.getDate() - today.getDay()));
-        const lastDay = new Date(today.setDate(today.getDate() - today.getDay() + 6));
-        return date >= firstDay && date <= lastDay;
-      }
-      if (repFilter === 'month') return date.getMonth() === today.getMonth();
-      return true;
-    });
-  };
-
-  const handlePartSearch = async (e) => {
-    const value = e.target.value;
-    setSearchParts(value);
-
-    try {
-      const res = await API.get("/parts", {
-        params: {
-          search: value
-        }
-      });
-
-      setPartsResults(res.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
- */
+  
   return (
     <Container className="mt-4">
       <h1 className="text-center mb-4">Bienvenue dans Garage Manager</h1>
@@ -212,16 +150,23 @@ const Home = () => {
                 </Button>
               </div>
               <ListGroup className="mb-3">
-                {filteredEmployees.map((emp) => (
-                  <ListGroup.Item key={emp.id} className="d-flex justify-content-between">
-                    <div>
-                      <strong>{emp.firstname} {emp.lastname}</strong> — {emp.function}
-                    </div>
-                    <Button variant="link" size="sm">
-                      Détails
-                    </Button>
-                  </ListGroup.Item>
-                ))}
+                {searchEmployee.trim() !== "" && filteredEmployees.length === 0 && (
+                  <ListGroup.Item>Aucun résultat</ListGroup.Item>
+                )}
+                {searchEmployee.trim() !== "" &&
+                  filteredEmployees.map((emp) => (
+                    <ListGroup.Item
+                      key={emp.id}
+                      className="d-flex justify-content-between"
+                    >
+                      <div>
+                        <strong>{emp.firstname} {emp.lastname}</strong> — {emp.function}
+                      </div>
+                      <Button variant="link" size="sm">
+                        Détails
+                      </Button>
+                    </ListGroup.Item>
+                  ))}
               </ListGroup>
               <div>
                 <p> Employés total : <strong>{totalCount}</strong></p>
@@ -246,8 +191,8 @@ const Home = () => {
               <Form.Control
                 type="text"
                 placeholder="Rechercher par nom, immatriculation, téléphone ou email"
-                value=""
-                onChange=""
+                value={searchCustomer}
+                onChange={handleCustomerSearch}
                 className="mb-3"
               />
               <Dropdown className="mb-2">
@@ -261,16 +206,29 @@ const Home = () => {
                 </Dropdown.Menu>
               </Dropdown>
               <ListGroup className="mb-3">
-                {filteredCustomers.map((client) => (
-                  <ListGroup.Item key={client.id} action as={Link} to={`/customer/${client.id}/vehicles`}>
-                    <strong>{client.name}</strong> — {client.name} <br />
-                     {client.phone} •  {client.email} <br />
-                     Nombre de véhicules : <strong>{ client.vehiclesCount ? client.vehiclesCount : 0 }</strong>< br/>
-                     Réparations en cours :<strong>{ client.repairsInProgress ? client.repairsInProgress : 0 }</strong> <br />
-                     Factures impayées: <strong>{ client.unpaidInvoices ? client.unpaidInvoices : 0 } </strong>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
+
+                {searchCustomer.trim() !== "" && filteredCustomers.length === 0 && (
+                  <ListGroup.Item>Aucun client trouvé</ListGroup.Item>
+                )}
+
+                {searchCustomer.trim() !== "" &&
+                  filteredCustomers.map((client) => (
+                    <ListGroup.Item
+                      key={client.id}
+                      action
+                      as={Link}
+                      to={`/customers/${client.id}`}
+                    >
+                      <strong>{client.firstname} {client.lastname}</strong><br />
+                      {client.phone} • {client.email} <br />
+                      Nombre de véhicules : <strong>{client.vehiclesCount || 0}</strong><br />
+                      Réparations en cours : <strong>{client.repairsInProgress || 0}</strong><br />
+                      Factures impayées : <strong>{client.unpaidInvoices || 0}</strong>
+                    </ListGroup.Item>
+                  ))
+                }
+
+            </ListGroup>
               <div className="text-muted text-sm">
                 <p> Véhicules réparés : <strong>0</strong>< br/></p>
                 <p> Total des véhicules : 0</p>
@@ -296,34 +254,40 @@ const Home = () => {
               <Form.Control
                 type="text"
                 placeholder="Rechercher par désignation ..."
-                value=""
-                onChange=""
+                value={searchPart}
+                onChange={handlePartSearch}
                 className="mb-3"
               />
               <ListGroup className="mb-3">
-                {partsResults.map((part) => (
-                  <ListGroup.Item
-                    key={part.id}
-                    className="d-flex justify-content-between align-items-center"
-                  >
-                    <div>
-                      <strong>{part.name}</strong>
-                      <div className="text-muted small">
-                        Ref: {part.reference}
-                      </div>
-                    </div>
+                {searchPart.trim() !== "" && partsResults.length === 0 && (
+                  <ListGroup.Item>Aucune pièce trouvée</ListGroup.Item>
+                )}
 
-                    <div>
-                      {part.quantity === 0 ? (
-                        <span className="badge bg-danger">Out</span>
-                      ) : part.quantity <= part.minQuantity ? (
-                        <span className="badge bg-warning text-dark">Low</span>
-                      ) : (
-                        <span className="badge bg-success">OK</span>
-                      )}
-                    </div>
-                  </ListGroup.Item>
-                ))}
+                {searchPart.trim() !== "" &&
+                  partsResults.map((part) => (
+                    <ListGroup.Item
+                      key={part.id}
+                      className="d-flex justify-content-between align-items-center"
+                      action
+                      as={Link}
+                      to={`/parts/${part.id}`}
+                    >
+                      <div>
+                        <strong>{part.name}</strong>
+                        <div className="text-muted small">
+                          Ref: {part.reference}
+                        </div>
+                      </div>
+
+                      <div>
+                        {part.quantity === 0 ? (
+                          <span className="badge bg-danger">Rupture</span>
+                        ) : part.quantity <= part.minQuantity ? (
+                          <span className="badge bg-warning text-dark">Faible stock</span>
+                        ) : null}
+                      </div>
+                    </ListGroup.Item>
+                  ))}
               </ListGroup>
               <div className="text-muted text-sm">
                 <p> Total stock : {stockStats.total_parts || 0}</p>
@@ -349,10 +313,25 @@ const Home = () => {
               <Form.Control
                 type="text"
                 placeholder="Rechercher par numéro de facture, nom du client ou immatriculation"
-                value=""
-                onChange=""
+                value={searchInvoice}
+                onChange={handleInvoiceSearch}
                 className="mb-3"
               />
+              <ListGroup className="mb-3">
+                {searchInvoice.trim() !== "" && invoiceResults.length === 0 && (
+                  <ListGroup.Item>Aucune facture trouvée</ListGroup.Item>
+                )}
+
+                {searchInvoice.trim() !== "" &&
+                  invoiceResults.map((inv) => (
+                    <ListGroup.Item key={inv.id}>
+                      <strong>Facture #{inv.invoiceNumber}</strong><br />
+                      Client : {inv.customerFirstName} {inv.customerLastName}<br />
+                      Immatriculation : {inv.vehicleNumber}<br />
+                      Montant : {inv.total} Ar
+                    </ListGroup.Item>
+                  ))}
+              </ListGroup>
               <div className="text-muted text-sm">
                 <p> Brouillons : <strong bg="secondary">0</strong></p>
                 <p> Payées : <strong bg="success">0</strong></p>
