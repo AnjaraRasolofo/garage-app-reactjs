@@ -176,11 +176,11 @@ nelmio_cors:
 
 ##  Aperçu
 
-*(Ajoute ici des screenshots de ton app)*
+*<img width="1917" height="960" alt="image" src="https://github.com/user-attachments/assets/10d7cb66-c83e-4075-aeaf-57de8f14157a" />
 
 ##  Auteur
 
-* Ton nom
+* Anjarasoa Solofondraibe - Développeur PHP / Javascript - https://anjara-dev.infy.uk/
 
 ##  Licence
 
