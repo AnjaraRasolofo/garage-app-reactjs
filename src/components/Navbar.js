@@ -88,12 +88,12 @@ function Navbar() {
           <li className="nav-item dropdown">
             <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Paramètres</a>
             <ul className="dropdown-menu custom-dropdown">
-              <li><a className="dropdown-item" href="#">🌍 Général (devise, langue)</a></li>
-              <li><a className="dropdown-item" href="#">🏢 Garage</a></li>
-              <li><a className="dropdown-item" href="#">💰 Finance</a></li>
-              <li><a className="dropdown-item" href="#">🚗 Métier</a></li>
-              <li><a className="dropdown-item" href="#">📄 Facturation</a></li>
-              <li><a className="dropdown-item" href="#">🔐 Utilisateurs</a></li>
+              <li><a className="dropdown-item" href="#">Général (devise, langue)</a></li>
+              <li><a className="dropdown-item" href="#">Garage</a></li>
+              <li><a className="dropdown-item" href="#">Finance</a></li>
+              <li><a className="dropdown-item" href="#">Métier</a></li>
+              <li><a className="dropdown-item" href="#">Facturation</a></li>
+              <li><a className="dropdown-item" href="#">Utilisateurs</a></li>
             </ul>
           </li> 
 

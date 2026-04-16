@@ -98,7 +98,7 @@ const RepairForm = () => {
     else setShowPartForm(true);
   };
 
-  // ➕ Ajouter pièce
+  // Ajouter pièce
   const addPart = () => {
     setFormData(prev => ({
       ...prev,
@@ -365,7 +365,7 @@ const RepairForm = () => {
                       setCurrentWorkLine({
                         ...currentWorkLine,
                         custom_title: e.target.value,
-                        //template_id: null // 🔥 casse le lien template
+                        //template_id: null // casse le lien template
                       })
                     }
                   />
