@@ -1,70 +1,187 @@
-# Getting Started with Create React App
+# Garage App Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Application frontend développée en React permettant de gérer un garage automobile (clients, véhicules, réparations, etc.) en consommant une API backend sécurisée.
 
-## Available Scripts
+## Fonctionnalités
 
-In the project directory, you can run:
+*  Authentification (JWT)
+*  Gestion des utilisateurs (admin / client)
+*  Gestion des véhicules
+*  Gestion des réparations / interventions
+*  Dashboard avec statistiques
+*  Communication avec API REST
 
-### `npm start`
+##  Stack technique
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+* React JS
+* Axios (ou Fetch API)
+* React Router
+* Bootstrap / Tailwind (selon ton cas)
+* JWT Authentication
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+##  Structure du projet
 
-### `npm test`
+```
+src/
+│── components/     # Composants réutilisables
+│── pages/          # Pages principales
+│── services/       # Appels API
+│── context/        # Gestion état global (Auth, etc.)
+│── hooks/          # Hooks personnalisés
+│── assets/         # Images, styles
+│── App.js
+│── main.jsx / index.js
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+##  Installation
 
-### `npm run build`
+### 1. Cloner le projet
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+git clone https://github.com/ton-username/garage-frontend.git
+cd garage-frontend
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. Installer les dépendances
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm install
+```
 
-### `npm run eject`
+### 3. Configuration des variables d’environnement
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Créer un fichier `.env` à la racine :
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```env
+REACT_APP_API_URL=http://localhost:8000/api
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+En production :
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```env
+REACT_APP_API_URL=https://ton-domaine.com/api
+```
 
-## Learn More
+##  Lancer le projet
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+npm run dev
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+ou
 
-### Code Splitting
+```bash
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+##  Authentification
 
-### Analyzing the Bundle Size
+L’application utilise un système JWT :
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+* Login → récupération du token
+* Stockage (localStorage / context)
+* Ajout automatique dans les headers :
 
-### Making a Progressive Web App
+```js
+Authorization: Bearer <token>
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+##  Connexion avec l’API
 
-### Advanced Configuration
+Exemple avec Axios :
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```js
+import axios from "axios";
 
-### Deployment
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+});
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
-### `npm run build` fails to minify
+export default api;
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+##  Build production
+
+```bash
+npm run build
+```
+
+Les fichiers seront générés dans :
+
+```
+/dist ou /build
+```
+
+##  Déploiement
+
+### VPS (Apache / Nginx)
+
+1. Build du projet :
+
+```bash
+npm run build
+```
+
+2. Copier les fichiers vers le serveur :
+
+```bash
+scp -r dist/* user@vps:/var/www/html
+```
+
+3. Configurer le serveur web :
+
+#### Exemple Nginx
+
+```nginx
+server {
+    listen 80;
+    server_name ton-domaine.com;
+
+    root /var/www/html;
+    index index.html;
+
+    location / {
+        try_files $uri /index.html;
+    }
+}
+```
+
+##  Problèmes courants
+
+###  Erreur CORS
+
+Configurer ton backend Symfony :
+
+```yaml
+# nelmio_cors.yaml
+nelmio_cors:
+    defaults:
+        allow_origin: ['*']
+        allow_headers: ['Content-Type', 'Authorization']
+        allow_methods: ['GET', 'POST', 'PUT', 'DELETE']
+```
+
+###  Token JWT invalide
+
+* Vérifier clé privée / publique côté backend
+* Vérifier expiration du token
+
+##  Aperçu
+
+*(Ajoute ici des screenshots de ton app)*
+
+##  Auteur
+
+* Ton nom
+
+##  Licence
+
+MIT
