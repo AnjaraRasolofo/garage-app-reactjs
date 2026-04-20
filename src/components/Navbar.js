@@ -16,7 +16,18 @@ function Navbar() {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4">
-      <a className="navbar-brand" href="/">Garage Manager</a>
+      <a className="navbar-brand d-flex align-items-center" href="/">
+    
+        <img
+          src="/logo.png"
+          alt="Logo"
+          width="40"
+          height="40"
+          className="me-2"
+        />
+
+        Garage Manager
+      </a>
       <button
         className="navbar-toggler"
         type="button"

@@ -108,7 +108,9 @@ const CustomerList = () => {
         <tbody>
           {Array.isArray(customers) && customers.map((cust) => (
             <tr key={cust.id}>
-              <td>{cust.lastname} {cust.firstname}</td>
+              <td><a href={`/customer/${cust.id}`} className="text-decoration-none">
+                {cust.lastname} {cust.firstname}
+              </a></td>
               <td>{cust.phone}</td>
               <td>{cust.type}</td>
               <td style={{ width: '160px' }}>

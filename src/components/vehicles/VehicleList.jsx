@@ -134,7 +134,9 @@ const fetchVehicles = async () => {
         <tbody>
           {Array.isArray(vehicles) && vehicles.map((veh) => (
             <tr key={veh.id}>
-              <td>{veh.number}</td>
+              <td><Link to={`/vehicle/${veh.id}`} className="text-decoration-none">
+                {veh.number}
+              </Link></td>
               <td>{veh.brand} {veh.model}</td>
               <td>{veh.customer?.lastname} {veh.customer?.firstname}</td>
               <td style={{ width: '130px' }}>

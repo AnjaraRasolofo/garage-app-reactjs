@@ -9,8 +9,10 @@ import EmployeesList from './components/employees/EmployeeList';
 import EmployeesForm from './components/employees/EmployeeForm';
 import CustomerList from './components/customers/CustomerList';
 import CustomerForm from './components/customers/CustomerForm';
+import CustomerDetail from './components/customers/CustomerDetail';
 import VehicleList from './components/vehicles/VehicleList';
 import VehicleForm from './components/vehicles/VehiculeForm';
+import VehicleDetail from './components/vehicles/VehicleDetail';
 import RepairForm from './components/repairs/RepairForm';
 import RepairList from './components/repairs/RepairList';
 import CustomerVehicles from './components/customers/CustomerVehicles';
@@ -42,11 +44,13 @@ function App() {
         <Route path="/customers" element={<CustomerList/>}/>
         <Route path="/customers/add" element={<CustomerForm/>}/>
         <Route path="/customers/:id" element={<CustomerForm/>}/>
+        <Route path="/customer/:id" element={<CustomerDetail />} />
         <Route path="/customers/:id/vehicles" element={<CustomerVehicles />}/>
+
         <Route path="/vehicles/add" element={<VehicleForm/>}/>
         <Route path="/vehicles" element={<VehicleList/>}/>
-        
         <Route path="/vehicles/:id" element={<VehicleForm/>}/>
+        <Route path="/vehicle/:id" element={<VehicleDetail />} />
 
         <Route path="/repairs" element={<RepairList />}/>
         <Route path="/repairs/add" element={<RepairForm />}/>
@@ -58,7 +62,7 @@ function App() {
 
       </Routes>
       <footer className="footer bg-light text-center py-3 mt-5">
-        &copy; 2023 - <a href="https://301-webagency.xyz" className="text-decoration-none text-reset">301 Web Agency </a>
+        &copy; 2023 - <a href="https://agency301.website" className="text-decoration-none text-reset">301 Web Agency </a>
       </footer>
     </BrowserRouter>
   );
